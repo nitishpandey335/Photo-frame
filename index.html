@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Photo Frame Studio — 6 occasions x 10 designs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Caveat:wght@500;600&family=Cormorant+Garamond:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#eceadf;color:#2a2723;font-family:'Nunito',system-ui,-apple-system,sans-serif}
+
+  .panel{max-width:940px;margin:0 auto;padding:18px 16px 4px}
+  .panel h1{font-family:'Dancing Script',cursive;font-size:36px;margin:0 0 2px}
+  .panel .sub{margin:0 0 14px;font-size:14px;color:#5d574d}
+  .label{font-size:12px;font-weight:800;letter-spacing:.08em;color:#7a7264;margin:0 0 6px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  .chip{border:1px solid #c9c2b5;background:#fff;border-radius:999px;padding:8px 14px;font:inherit;
+        font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:7px}
+  .chip .dot{width:12px;height:12px;border-radius:50%;border:1px solid rgba(0,0,0,.15)}
+  .chip[aria-pressed="true"]{background:#1a1a1a;color:#f4f1ea;border-color:#1a1a1a}
+  .row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-bottom:12px}
+  .btn{border:none;border-radius:999px;padding:10px 18px;font:inherit;font-weight:700;background:#1a1a1a;color:#f4f1ea;cursor:pointer}
+  .btn.ghost{background:#fff;color:#1a1a1a;border:1px solid #c9c2b5}
+  .btn:disabled{opacity:.5;cursor:default}
+  .field{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:#5d574d}
+  .field input,.field select,.field textarea{font:inherit;font-weight:400;padding:8px 10px;border:1px solid #c9c2b5;border-radius:10px;background:#fff}
+  .field textarea{width:min(600px,92vw);height:92px;resize:vertical}
+  .hint{font-size:13px;color:#6b655a;line-height:1.55;margin:0 0 6px}
+
+  .stage{display:flex;justify-content:center;padding:8px 0 46px}
+  #scaler{transform-origin:top center}
+
+  .frame{width:800px;height:1000px;padding:52px;border-radius:6px;
+         background:repeating-linear-gradient(115deg,#131313 0 3px,#0b0b0b 3px 6px),#101010;
+         box-shadow:0 26px 50px rgba(0,0,0,.35),inset 0 0 0 2px #232323}
+  .frame.wood{background:repeating-linear-gradient(100deg,#5a3a20 0 4px,#4a2e18 4px 9px),#4a2e18;
+              box-shadow:0 26px 50px rgba(0,0,0,.32),inset 0 0 0 2px #6b4526}
+  .frame.pale{background:repeating-linear-gradient(105deg,#efe9dc 0 4px,#e2d9c8 4px 9px),#e2d9c8;
+              box-shadow:0 26px 50px rgba(0,0,0,.22),inset 0 0 0 2px #f6f1e6}
+  .frame.gilt{background:linear-gradient(135deg,#d9bd7e,#8a6b30 40%,#e8d29a 60%,#8a6b30);
+              box-shadow:0 26px 50px rgba(0,0,0,.35),inset 0 0 0 2px #f0dda9}
+
+  .board{position:relative;width:100%;height:100%;overflow:hidden;
+         background:radial-gradient(120% 92% at 50% 0%,var(--bg1) 0%,var(--bg2) 60%,var(--bg3) 100%);
+         box-shadow:inset 0 0 44px rgba(0,0,0,.45)}
+  .board::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:var(--speckle);
+    background-image:radial-gradient(circle at 22% 32%,var(--ink) 0 1px,transparent 1px),
+                     radial-gradient(circle at 68% 62%,var(--ink) 0 1px,transparent 1px),
+                     radial-gradient(circle at 44% 84%,var(--ink) 0 1px,transparent 1px);
+    background-size:150px 150px,200px 200px,120px 120px}
+  .board.rule::before{content:"";position:absolute;inset:14px;border:1px solid var(--accent);opacity:.55;pointer-events:none}
+
+  .month{position:absolute;font-family:var(--display);font-weight:700;color:var(--ink);line-height:1.1}
+  .cal{position:absolute}
+  .cal table{width:100%;border-collapse:collapse}
+  .cal th{font-size:12px;letter-spacing:.09em;font-weight:700;color:var(--muted);padding-bottom:8px}
+  .cal td{height:26px;text-align:center;font-size:15px;color:var(--ink);position:relative;font-family:'Nunito',sans-serif}
+  .cal td.mark span{position:relative;z-index:2;font-weight:800}
+  .cal td.mark svg{position:absolute;left:50%;top:50%;transform:translate(-50%,-52%);width:36px;height:34px;z-index:1;color:var(--accent)}
+
+  .msg{position:absolute;white-space:pre-wrap;font-family:var(--body);font-size:19px;line-height:1.35;color:var(--ink)}
+  .sender{position:absolute;font-family:var(--body);font-size:19px;color:var(--ink)}
+  .greet{position:absolute;line-height:1.06;font-family:var(--display);font-weight:700;font-size:var(--greet-size,44px);color:var(--ink)}
+  .dateline{display:block;margin-top:12px;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;letter-spacing:.22em;color:var(--accent)}
+  .dateline::before,.dateline::after{content:"—";opacity:.6;margin:0 9px;letter-spacing:0}
+  .bunting{position:absolute;width:334px;height:112px;color:var(--ink)}
+  .bunting text{font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;letter-spacing:.15em;fill:var(--ink)}
+  .swirl{position:absolute;height:16px;color:var(--ink)}
+  .art{position:absolute;color:var(--accent)}
+
+  .slot{position:absolute;display:inline-block;line-height:0;background:var(--slotbg)}
+  .slot img{display:block}
+  .slot.box{display:flex;align-items:center;justify-content:center}
+  .slot.box img{max-width:100%;max-height:100%;width:auto;height:auto}
+  .slot .kill{position:absolute;top:-10px;right:-10px;width:21px;height:21px;border-radius:50%;border:none;
+              background:#c0392b;color:#fff;font:700 12px/1 'Nunito',sans-serif;cursor:pointer;display:none;z-index:5}
+  .slot:hover .kill{display:block}
+  .slot.empty{cursor:pointer;border:2px dashed var(--muted)!important;box-shadow:none!important;
+    background:repeating-linear-gradient(45deg,rgba(128,128,128,.16) 0 8px,rgba(128,128,128,.05) 8px 16px)}
+  .slot.empty::before{content:attr(data-n);position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:var(--muted);line-height:1}
+  body.exporting .slot.empty{display:none}
+  body.exporting .kill{display:none!important}
+
+  /* photo border styles */
+  .ps-gold .slot{border:3px solid var(--accent);box-shadow:0 6px 14px rgba(0,0,0,.45)}
+  .ps-hairline .slot{border:1px solid var(--muted);box-shadow:0 4px 10px rgba(0,0,0,.18)}
+  .ps-white .slot{border:5px solid #fff;box-shadow:0 6px 14px rgba(0,0,0,.28)}
+  .ps-polaroid .slot{border:8px solid #fdfbf5;border-bottom-width:26px;box-shadow:0 9px 18px rgba(0,0,0,.4)}
+  .ps-soft .slot{border:none;border-radius:12px;overflow:hidden;box-shadow:0 10px 22px rgba(0,0,0,.5)}
+</style>
+</head>
+<body>
+
+<div class="panel no-export">
+  <h1>Photo frame studio</h1>
+  <p class="sub">6 occasions &times; 10 designs = 60 frames. Every design holds 12+ photos, your own date and message.</p>
+
+  <p class="label">OCCASION</p>
+  <div class="chips" id="occasions"></div>
+
+  <p class="label">DESIGN</p>
+  <div class="chips" id="designs"></div>
+
+  <div class="row">
+    <button class="btn" id="pick">Add photos</button>
+    <input type="file" id="file" accept="image/*" multiple hidden>
+    <button class="btn ghost" id="clear">Clear photos</button>
+    <button class="btn" id="save">Download PNG</button>
+    <label class="field" style="flex-direction:row;align-items:center;gap:6px;padding-bottom:9px">
+      <input type="checkbox" id="crop"> Fill frame (crops photo)
+    </label>
+  </div>
+
+  <div class="row">
+    <label class="field">Date (circled on the calendar)
+      <input type="date" id="date" value="2026-08-24">
+    </label>
+    <label class="field">Date line (printed on the frame)
+      <input id="dateline" size="22">
+    </label>
+    <label class="field" style="flex-direction:row;align-items:center;gap:6px;padding-bottom:9px">
+      <input type="checkbox" id="showdate" checked> Show date line
+    </label>
+  </div>
+
+  <div class="row">
+    <label class="field">Headline (use / for a new line)
+      <input id="greet" size="26">
+    </label>
+    <label class="field">Signed by
+      <input id="name" value="[Sender's Name]" size="18">
+    </label>
+  </div>
+
+  <div class="row">
+    <label class="field">Message
+      <textarea id="msg"></textarea>
+    </label>
+  </div>
+
+  <p class="hint">Photos are never cropped — the whole picture is fitted inside its frame. Click any dashed box to choose the photo for that spot, and hover a photo and press &times; to remove it. Empty boxes don't appear in the download.</p>
+</div>
+
+<div class="stage">
+  <div id="scaler">
+    <div class="frame" id="frame">
+      <div class="board" id="board">
+        <div class="month" id="monthOut"></div>
+        <div class="cal" id="calWrap"><table id="calTable"></table></div>
+        <div class="msg" id="msgOut"></div>
+        <div class="sender" id="senderOut"></div>
+        <svg class="bunting" id="bunting" viewBox="0 0 334 112" fill="none"></svg>
+        <div class="greet" id="greetOut"></div>
+        <svg class="swirl" id="swirl" viewBox="0 0 256 16" fill="none">
+          <path d="M6 8C40 0 60 16 94 8M162 8C196 0 216 16 250 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          <circle cx="112" cy="8" r="2.2" fill="currentColor"/><circle cx="144" cy="8" r="2.2" fill="currentColor"/>
+        </svg>
+        <svg class="art" id="art" viewBox="0 0 186 176" fill="none"></svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===================== layouts (board 696 x 896) ===================== */
+const grid = (cols, rows, x0, y0, dx, dy, w, h) => {
+  const a=[]; for(let r=0;r<rows;r++) for(let c=0;c<cols;c++) a.push([x0+c*dx, y0+r*dy, w, h]); return a;
+};
+
+const L = {
+  mosaic:{arr:'A',mode:'shrink',slots:[
+    [300,58,120,150],[396,102,132,168],[530,148,112,142],
+    [296,222,116,128],[406,236,138,150],[538,256,116,148],
+    [312,348,110,126],[424,358,104,120],[526,374,108,130],
+    [300,468,120,140],[416,490,124,146],[540,514,112,134]]},
+
+  grid34:{arr:'A',mode:'box',slots:grid(3,4,300,58,124,156,112,140)},
+
+  heart:{arr:'A',mode:'box',slots:(()=>{const a=[],cx=486,cy=316,s=10.2;
+    for(let i=0;i<12;i++){const t=Math.PI/2-i*(Math.PI/6);
+      const x=16*Math.sin(t)**3, y=13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t);
+      a.push([Math.round(cx+x*s-48),Math.round(cy-y*s-52),96,104]);}
+    a.push([cx-58,cy-40,116,120]); return a;})()},
+
+  columns:{arr:'A',mode:'shrink',slots:[
+    [300,52,122,152],[300,222,122,152],[300,392,122,152],
+    [434,86,122,152],[434,256,122,152],[434,426,122,152],
+    [568,52,110,140],[568,214,110,140],[568,376,110,140],
+    [300,562,122,132],[434,596,122,132],[568,538,110,130]]},
+
+  scrapbook:{arr:'B',mode:'shrink',slots:[
+    [300,20,180,132,-3],[492,34,180,132,4],
+    [300,164,180,132,3],[492,178,180,132,-4],
+    [300,308,180,132,-2],[492,322,180,132,3],
+    [300,452,180,132,4],[492,466,180,132,-3],
+    [300,596,180,132,-4],[492,610,180,132,2],
+    [300,740,180,132,3],[492,754,180,132,-2]]},
+
+  diagonal:{arr:'D',mode:'box',slots:[
+    [22,18,150,140],[192,18,150,140],[362,18,150,140],[532,18,150,140],
+    [104,166,150,140],[274,166,150,140],[444,166,150,140],[610,166,66,140],
+    [22,314,150,140],[192,314,150,140],[362,314,150,140],[532,314,150,140]]},
+
+  gridfull:{arr:'D',mode:'box',slots:grid(4,3,22,18,170,148,150,140)},
+
+  border:{arr:'C',mode:'box',slots:[
+    [20,24,146,118],[190,24,146,118],[360,24,146,118],[530,24,146,118],
+    [20,300,146,140],[530,300,146,140],
+    [20,470,146,140],[530,470,146,140],
+    [20,754,146,118],[190,754,146,118],[360,754,146,118],[530,754,146,118]]},
+
+  filmstrip:{arr:'A',mode:'box',slots:[
+    [306,50,170,100],[306,158,170,100],[306,266,170,100],[306,374,170,100],[306,482,170,100],[306,590,170,100],
+    [500,50,170,100],[500,158,170,100],[500,266,170,100],[500,374,170,100],[500,482,170,100],[500,590,170,100]]},
+
+  pyramid:{arr:'A',mode:'box',slots:[
+    [418,46,140,130],
+    [330,186,130,130],[470,186,130,130],
+    [300,326,120,120],[428,326,120,120],[556,326,120,120],
+    [300,456,120,120],[428,456,120,120],[556,456,120,120],
+    [300,586,120,110],[428,586,120,110],[556,586,120,110]]}
+};
+
+/* ===================== text arrangements ===================== */
+const ARR = {
+A:{month:'left:28px;top:6px;font-size:72px',
+   cal:'left:26px;top:106px;width:274px;display:block',
+   msg:'left:16px;top:302px;width:270px;text-align:center',
+   sender:'left:16px;width:270px;text-align:center',
+   greet:'left:22px;bottom:34px;width:420px;text-align:center',
+   swirl:'left:104px;bottom:20px;width:256px;display:block',
+   art:'right:20px;bottom:30px;width:186px;height:176px;display:block',
+   bunting:'right:4px;top:0;display:block'},
+
+B:{month:'left:26px;top:8px;font-size:58px',
+   cal:'left:24px;top:92px;width:250px;display:block',
+   msg:'left:22px;top:296px;width:254px;text-align:left',
+   sender:'left:22px;width:254px;text-align:left',
+   greet:'left:16px;bottom:132px;width:268px;text-align:center',
+   swirl:'display:none',
+   art:'left:92px;bottom:14px;width:112px;height:106px;display:block',
+   bunting:'display:none'},
+
+C:{month:'display:none',
+   cal:'display:none',
+   msg:'left:196px;top:452px;width:304px;text-align:center',
+   sender:'left:196px;width:304px;text-align:center',
+   greet:'left:190px;top:286px;width:316px;text-align:center',
+   swirl:'left:216px;top:700px;width:256px;display:block',
+   art:'left:298px;top:166px;width:104px;height:98px;display:block',
+   bunting:'display:none'},
+
+D:{month:'left:28px;top:596px;font-size:56px',
+   cal:'left:26px;top:676px;width:250px;display:block',
+   msg:'left:310px;top:604px;width:270px;text-align:left',
+   sender:'left:310px;width:270px;text-align:left',
+   greet:'left:118px;top:472px;width:460px;text-align:center',
+   swirl:'display:none',
+   art:'right:12px;bottom:16px;width:96px;height:92px;display:block',
+   bunting:'display:none'}
+};
+
+/* ===================== designs (10) ===================== */
+const D = [
+{id:'chalk',   name:'Classic Chalk',  dot:'#d9bd7e', frame:'',     layout:'mosaic',    ps:'ps-gold',     greetSize:'44px',
+ vars:{'--bg1':'#232323','--bg2':'#171717','--bg3':'#121212','--ink':'#f4f1ea','--muted':'#a8a297','--accent':'#d9bd7e','--slotbg':'#0d0d0d','--speckle':'.10','--display':"'Dancing Script',cursive",'--body':"'Caveat',cursive"}},
+
+{id:'ivory',   name:'Rose Ivory',     dot:'#b76e79', frame:'pale', layout:'grid34',    ps:'ps-hairline', greetSize:'38px', rule:true,
+ vars:{'--bg1':'#fbf7f0','--bg2':'#f3ece1','--bg3':'#eadfcf','--ink':'#3d2f2a','--muted':'#a3907f','--accent':'#b76e79','--slotbg':'#f3ece1','--speckle':'.05','--display':"'Cormorant Garamond',serif",'--body':"'Cormorant Garamond',serif"}},
+
+{id:'neon',    name:'Midnight Neon',  dot:'#4fd1c5', frame:'',     layout:'diagonal',  ps:'ps-soft',     greetSize:'42px',
+ vars:{'--bg1':'#141a26','--bg2':'#0d1119','--bg3':'#080a0f','--ink':'#e9f6f5','--muted':'#7d8a9b','--accent':'#4fd1c5','--slotbg':'#080a0f','--speckle':'.10','--display':"'Nunito',sans-serif",'--body':"'Nunito',sans-serif"}},
+
+{id:'wine',    name:'Wine Heart',     dot:'#e6c07b', frame:'',     layout:'heart',     ps:'ps-gold',     greetSize:'42px',
+ vars:{'--bg1':'#3b1420','--bg2':'#26101a','--bg3':'#190a11','--ink':'#f7ece0','--muted':'#b79a8c','--accent':'#e6c07b','--slotbg':'#180a10','--speckle':'.08','--display':"'Dancing Script',cursive",'--body':"'Caveat',cursive"}},
+
+{id:'kraft',   name:'Kraft Scrapbook',dot:'#c98a3c', frame:'wood', layout:'scrapbook', ps:'ps-polaroid', greetSize:'40px',
+ vars:{'--bg1':'#d9c3a0','--bg2':'#cbb08a','--bg3':'#b99a72','--ink':'#3a2a18','--muted':'#8d7454','--accent':'#8a5a24','--slotbg':'#cbb08a','--speckle':'.07','--display':"'Caveat',cursive",'--body':"'Caveat',cursive"}},
+
+{id:'botanic', name:'Botanical Green',dot:'#cbb26a', frame:'wood', layout:'columns',   ps:'ps-white',    greetSize:'40px',
+ vars:{'--bg1':'#1b3a2c','--bg2':'#122a20','--bg3':'#0c1e17','--ink':'#f0f4ea','--muted':'#93ab98','--accent':'#cbb26a','--slotbg':'#0c1e17','--speckle':'.08','--display':"'Cormorant Garamond',serif",'--body':"'Cormorant Garamond',serif"}},
+
+{id:'minimal', name:'Minimal White',  dot:'#111111', frame:'pale', layout:'gridfull',  ps:'ps-hairline', greetSize:'36px',
+ vars:{'--bg1':'#ffffff','--bg2':'#fafafa','--bg3':'#f2f2f0','--ink':'#141414','--muted':'#a8a8a4','--accent':'#141414','--slotbg':'#f2f2f0','--speckle':'.04','--display':"'Nunito',sans-serif",'--body':"'Nunito',sans-serif"}},
+
+{id:'blush',   name:'Blush Border',   dot:'#d98ea0', frame:'pale', layout:'border',    ps:'ps-white',    greetSize:'40px',
+ vars:{'--bg1':'#fdeef1','--bg2':'#f8dfe5','--bg3':'#f0ccd6','--ink':'#5c2a38','--muted':'#c092a0','--accent':'#c0526d','--slotbg':'#f8dfe5','--speckle':'.05','--display':"'Dancing Script',cursive",'--body':"'Caveat',cursive"}},
+
+{id:'retro',   name:'Retro Film',     dot:'#e0a83c', frame:'',     layout:'filmstrip', ps:'ps-gold',     greetSize:'40px',
+ vars:{'--bg1':'#123a3a','--bg2':'#0c2a2a','--bg3':'#071c1c','--ink':'#f6efdc','--muted':'#8fada8','--accent':'#e0a83c','--slotbg':'#071c1c','--speckle':'.09','--display':"'Nunito',sans-serif",'--body':"'Caveat',cursive"}},
+
+{id:'royal',   name:'Royal Gold',     dot:'#e8cd8a', frame:'',     layout:'pyramid',   ps:'ps-gold',     greetSize:'44px', rule:true,
+ vars:{'--bg1':'#141210','--bg2':'#0d0b09','--bg3':'#060505','--ink':'#f6ecd6','--muted':'#9c8b6c','--accent':'#e8cd8a','--slotbg':'#060505','--speckle':'.09','--display':"'Cormorant Garamond',serif",'--body':"'Cormorant Garamond',serif"}}
+];
+
+/* ===================== art motifs ===================== */
+const ART = {
+cake:`<g stroke="currentColor" stroke-width="2.4" fill="none"><ellipse cx="93" cy="156" rx="70" ry="11"/>
+ <rect x="28" y="116" width="130" height="36" rx="9"/><rect x="41" y="84" width="104" height="34" rx="9"/><rect x="56" y="54" width="74" height="32" rx="9"/>
+ <path d="M28 127q16 12 32 0t32 0 32 0 32 0"/><path d="M41 95q13 11 26 0t26 0 26 0 26 0"/><path d="M56 65q12 10 24 0t24 0 24 0"/>
+ <path d="M74 54V32M93 54V26M112 54V32"/></g>
+<g fill="currentColor"><path d="M74 32c-6-8 6-10 0-16 8 6 6 12 0 16z"/><path d="M93 26c-6-8 6-10 0-16 8 6 6 12 0 16z"/><path d="M112 32c-6-8 6-10 0-16 8 6 6 12 0 16z"/></g>`,
+rings:`<g stroke="currentColor" stroke-width="4" fill="none"><circle cx="72" cy="106" r="46"/><circle cx="120" cy="106" r="46"/><path d="M120 60l-9-16h18l-9 16z" stroke-width="2.4"/></g>
+<g fill="currentColor"><path d="M120 28l4 11 11 4-11 4-4 11-4-11-11-4 11-4 4-11z"/><path d="M28 44l3 8 8 3-8 3-3 8-3-8-8-3 8-3 3-8z"/><path d="M166 74l3 8 8 3-8 3-3 8-3-8-8-3 8-3 3-8z"/></g>`,
+hearts:`<g stroke="currentColor" stroke-width="3.4" fill="none"><path d="M93 156C56 126 30 106 30 80c0-19 15-33 33-33 12 0 23 6 30 16 7-10 18-16 30-16 18 0 33 14 33 33 0 26-26 46-63 76z"/>
+ <path d="M40 42c-16-13-30-6-26 8 3 11 16 9 26-8z" stroke-width="2.2"/><path d="M150 32c16-13 30-6 26 8-3 11-16 9-26-8z" stroke-width="2.2"/></g>`,
+floral:`<g stroke="currentColor" stroke-width="2.4" fill="none"><path d="M93 168V78"/><path d="M93 120c-26 0-42-14-46-34 24-6 42 8 46 34z"/>
+ <path d="M93 120c26 0 42-14 46-34-24-6-42 8-46 34z"/><circle cx="93" cy="52" r="26"/><circle cx="93" cy="52" r="13"/>
+ <path d="M67 52c-14-10-14-26 0-36M119 52c14-10 14-26 0-36"/></g>
+<g fill="currentColor"><circle cx="40" cy="140" r="4"/><circle cx="146" cy="140" r="4"/><circle cx="93" cy="20" r="4"/></g>`,
+balloons:`<g stroke="currentColor" stroke-width="3" fill="none"><ellipse cx="58" cy="58" rx="30" ry="38"/><ellipse cx="126" cy="76" rx="26" ry="33"/>
+ <path d="M58 96c6 22-10 32-4 54M126 109c5 18-8 26-4 45"/><path d="M52 96h12l-6 8-6-8zM120 109h12l-6 8-6-8z"/></g>
+<g fill="currentColor"><path d="M20 118l3 8 8 3-8 3-3 8-3-8-8-3 8-3 3-8z"/><path d="M164 40l4 10 10 4-10 4-4 10-4-10-10-4 10-4 4-10z"/></g>`,
+star:`<g stroke="currentColor" stroke-width="3" fill="none"><path d="M93 34l17 40 43 4-33 29 10 42-37-23-37 23 10-42-33-29 43-4 17-40z"/>
+ <path d="M34 150h118M52 150v-14M134 150v-14" stroke-width="2.2"/></g>
+<g fill="currentColor"><path d="M24 46l3 8 8 3-8 3-3 8-3-8-8-3 8-3 3-8z"/><path d="M162 62l3 8 8 3-8 3-3 8-3-8-8-3 8-3 3-8z"/></g>`
+};
+
+const MARK = {
+ heart:'<svg viewBox="0 0 36 34"><path d="M18 31C8.5 23.5 2 18.5 2 12 2 7 6 3 11 3c2.9 0 5.6 1.4 7 3.7C19.4 4.4 22.1 3 25 3c5 0 9 4 9 9 0 6.5-6.5 11.5-16 19z" fill="none" stroke="currentColor" stroke-width="1.9"/></svg>',
+ ring:'<svg viewBox="0 0 36 34"><circle cx="18" cy="17" r="13" fill="none" stroke="currentColor" stroke-width="1.9"/></svg>',
+ star:'<svg viewBox="0 0 36 34"><path d="M18 3l4.2 9.6L32 13.6l-7.4 6.6 2.2 9.8L18 25l-8.8 5 2.2-9.8L4 13.6l9.8-1L18 3z" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>'
+};
+
+/* ===================== occasions (6) ===================== */
+const OCC = {
+birthday:{label:'Birthday', dot:'#d9bd7e', banner:'HAPPY BIRTHDAY', greet:'Happy Birthday / to you!', art:'cake', mark:'heart',
+ msg:"Today, as we look back on all the laughter and memories we've shared, we celebrate you. Thank you for being such an incredible friend and family member. Your presence brightens our lives in every way. Wishing you the happiest birthday filled with love and joy!"},
+anniversary:{label:'Anniversary', dot:'#e6c07b', banner:'HAPPY ANNIVERSARY', greet:'Happy / Anniversary!', art:'rings', mark:'ring',
+ msg:"Years pass, seasons change, but the way you two look at each other never does. Thank you for showing us what patience, laughter and quiet loyalty look like every single day. Here's to the years behind you and every one still to come."},
+wedding:{label:'Wedding', dot:'#b76e79', banner:'HAPPILY EVER AFTER', greet:'Congratulations / on your wedding', art:'floral', mark:'ring',
+ msg:"Two families, one long-awaited day, and a room full of people who have been quietly rooting for you both. May your home always be loud with laughter and soft with kindness. Wishing you a lifetime of ordinary, wonderful days together."},
+love:{label:'Love', dot:'#ff6b81', banner:'FOREVER & ALWAYS', greet:'Forever / & always', art:'hearts', mark:'heart',
+ msg:"Of all the ordinary days I've lived, the best ones are the ones you're in. Thank you for the early mornings, the bad jokes, the long drives and the quiet evenings. I would choose you again, and then again after that."},
+friendship:{label:'Friendship', dot:'#f2c14e', banner:'BEST FRIENDS FOREVER', greet:'Best friends / forever', art:'balloons', mark:'star',
+ msg:"From late-night calls to plans we never followed and jokes nobody else understands - thank you for being the one who stays. Here's to more terrible photos, more shared food, and many more years of exactly this."},
+farewell:{label:'Farewell / Thank you', dot:'#7fb2d9', banner:'THANK YOU', greet:'Thank you / for everything', art:'star', mark:'star',
+ msg:"You made this place better simply by being in it - steady on the hard days, generous with your time, and never too busy to help. Wherever you go next is lucky to have you. Keep in touch, and don't be a stranger."}
+};
+
+/* ===================== state ===================== */
+let occ='birthday', design=0, targetSlot=null;
+const board=document.getElementById('board'), frameEl=document.getElementById('frame'), fileInput=document.getElementById('file');
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+const occWrap=document.getElementById('occasions');
+Object.entries(OCC).forEach(([k,o])=>{
+  const b=document.createElement('button'); b.className='chip'; b.dataset.k=k;
+  b.innerHTML='<span class="dot" style="background:'+o.dot+'"></span>'+o.label;
+  b.onclick=()=>{occ=k; applyOccasionText(); render();};
+  occWrap.appendChild(b);
+});
+const desWrap=document.getElementById('designs');
+D.forEach((d,i)=>{
+  const b=document.createElement('button'); b.className='chip'; b.dataset.i=i;
+  b.innerHTML='<span class="dot" style="background:'+d.dot+'"></span>'+(i+1)+'. '+d.name;
+  b.onclick=()=>{design=i; render();};
+  desWrap.appendChild(b);
+});
+
+/* ===================== render ===================== */
+function collect(){return [...board.querySelectorAll('.slot')].map(s=>s.dataset.src||null);}
+
+function render(){
+  const keep=collect();
+  const d=D[design], o=OCC[occ], a=ARR[L[d.layout].arr];
+  [...occWrap.children].forEach(c=>c.setAttribute('aria-pressed',c.dataset.k===occ));
+  [...desWrap.children].forEach(c=>c.setAttribute('aria-pressed',+c.dataset.i===design));
+
+  Object.entries(d.vars).forEach(([k,v])=>board.style.setProperty(k,v));
+  board.style.setProperty('--greet-size',d.greetSize);
+  board.className='board '+(d.rule?'rule ':'')+d.ps;
+  frameEl.className='frame '+d.frame;
+
+  document.getElementById('monthOut').style.cssText=a.month;
+  document.getElementById('calWrap').style.cssText=a.cal;
+  document.getElementById('msgOut').style.cssText=a.msg;
+  document.getElementById('senderOut').style.cssText=a.sender;
+  document.getElementById('greetOut').style.cssText=a.greet;
+  document.getElementById('swirl').style.cssText=a.swirl;
+  document.getElementById('art').style.cssText=a.art;
+  document.getElementById('bunting').style.cssText=a.bunting;
+
+  document.getElementById('art').innerHTML=ART[o.art];
+  document.getElementById('bunting').innerHTML=
+   '<path d="M16 18C92 98 242 98 318 18" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round"/>'+
+   '<path d="M24 28C94 102 240 102 310 28" stroke="currentColor" stroke-width="1.5" fill="none" opacity=".7"/>'+
+   '<path d="M16 18c-12-12-22-6-18 6 4 10 14 6 18-6z" stroke="currentColor" stroke-width="2" fill="none"/>'+
+   '<path d="M16 18c2-16 12-18 16-8 3 9-6 12-16 8z" stroke="currentColor" stroke-width="2" fill="none"/>'+
+   '<path d="M318 18c12-12 22-6 18 6-4 10-14 6-18-6z" stroke="currentColor" stroke-width="2" fill="none"/>'+
+   '<path d="M318 18c-2-16-12-18-16-8-3 9 6 12 16 8z" stroke="currentColor" stroke-width="2" fill="none"/>'+
+   '<path id="bp" d="M32 36C102 106 234 106 302 36" fill="none"/>'+
+   '<text><textPath href="#bp" startOffset="50%" text-anchor="middle">'+o.banner+'</textPath></text>';
+
+  buildSlots(keep);
+  drawCal(); drawText();
+}
+
+function buildSlots(prev){
+  board.querySelectorAll('.slot').forEach(s=>s.remove());
+  const lay=L[D[design].layout];
+  lay.slots.forEach((p,i)=>{
+    const s=document.createElement('div');
+    s.className='slot empty'+(lay.mode==='box'?' box':'');
+    s.dataset.n=i+1; s.dataset.i=i;
+    s.style.left=p[0]+'px'; s.style.top=p[1]+'px'; s.style.width=p[2]+'px'; s.style.height=p[3]+'px';
+    if(p[4]) s.style.transform='rotate('+p[4]+'deg)';
+    s._box=[p[2],p[3]]; s._mode=lay.mode;
+    s.addEventListener('click',e=>{if(e.target.classList.contains('kill'))return; targetSlot=s; fileInput.click();});
+    board.appendChild(s);
+    if(prev[i]) setPhoto(s,prev[i]);
+  });
+}
+
+function setPhoto(slot,src){
+  slot.innerHTML=''; slot.classList.remove('empty');
+  const img=new Image(); img.src=src; img.onload=()=>sizeSlot(slot,img);
+  slot.appendChild(img);
+  const k=document.createElement('button'); k.className='kill'; k.textContent='\u00d7';
+  k.onclick=e=>{e.stopPropagation(); resetSlot(slot);};
+  slot.appendChild(k); slot.dataset.src=src;
+}
+
+function sizeSlot(slot,img){
+  const bw=slot._box[0], bh=slot._box[1], crop=document.getElementById('crop').checked;
+  if(slot._mode==='box'){
+    slot.style.width=bw+'px'; slot.style.height=bh+'px';
+    if(crop){img.style.cssText='width:100%;height:100%;object-fit:cover;max-width:none;max-height:none';}
+    else{img.style.cssText='max-width:100%;max-height:100%;width:auto;height:auto';}
+  }else{
+    if(crop){slot.style.width=bw+'px'; slot.style.height=bh+'px';
+      img.style.cssText='width:100%;height:100%;object-fit:cover';}
+    else{const k=Math.min(bw/img.naturalWidth,bh/img.naturalHeight);
+      const w=Math.round(img.naturalWidth*k), h=Math.round(img.naturalHeight*k);
+      slot.style.width=w+'px'; slot.style.height=h+'px';
+      img.style.cssText='width:'+w+'px;height:'+h+'px';}
+  }
+}
+
+function resetSlot(slot){
+  const bw=slot._box[0], bh=slot._box[1];
+  slot.innerHTML=''; slot.className='slot empty'+(slot._mode==='box'?' box':'');
+  slot.style.width=bw+'px'; slot.style.height=bh+'px'; delete slot.dataset.src;
+}
+
+/* ===================== inputs ===================== */
+document.getElementById('pick').onclick=()=>{targetSlot=null; fileInput.click();};
+fileInput.onchange=()=>{
+  const files=[...fileInput.files]; if(!files.length)return;
+  if(targetSlot){read(files[0],src=>setPhoto(targetSlot,src)); targetSlot=null;}
+  else{const empties=[...board.querySelectorAll('.slot.empty')];
+    files.forEach((f,i)=>{if(empties[i]) read(f,src=>setPhoto(empties[i],src));});}
+  fileInput.value='';
+};
+function read(file,cb){const fr=new FileReader(); fr.onload=()=>cb(fr.result); fr.readAsDataURL(file);}
+document.getElementById('clear').onclick=()=>board.querySelectorAll('.slot').forEach(resetSlot);
+document.getElementById('crop').onchange=()=>board.querySelectorAll('.slot').forEach(s=>{
+  const img=s.querySelector('img'); if(img) sizeSlot(s,img);});
+
+const msgBox=document.getElementById('msg'), greetBox=document.getElementById('greet'),
+      nameBox=document.getElementById('name'), msgOut=document.getElementById('msgOut'),
+      senderOut=document.getElementById('senderOut'), greetOut=document.getElementById('greetOut'),
+      dateBox=document.getElementById('date'), dateLineBox=document.getElementById('dateline'),
+      showDate=document.getElementById('showdate');
+
+function applyOccasionText(){
+  msgBox.value=OCC[occ].msg;
+  greetBox.value=OCC[occ].greet;
+}
+function autoDateLine(){
+  const p=dateBox.value.split('-').map(Number);
+  dateLineBox.value=p[2]+' '+MONTHS[p[1]-1].toUpperCase()+' '+p[0];
+}
+function drawCal(){
+  const p=dateBox.value.split('-').map(Number), y=p[0], m=p[1], d0=p[2];
+  document.getElementById('monthOut').textContent=MONTHS[m-1];
+  const first=new Date(y,m-1,1).getDay(), days=new Date(y,m,0).getDate();
+  const mk=MARK[OCC[occ].mark];
+  let h='<tr>'+['SUN','MON','TUE','WED','THU','FRI','SAT'].map(x=>'<th>'+x+'</th>').join('')+'</tr><tr>';
+  for(let i=0;i<first;i++) h+='<td></td>';
+  for(let d=1;d<=days;d++){
+    h += (d===d0) ? '<td class="mark">'+mk+'<span>'+d+'</span></td>' : '<td>'+d+'</td>';
+    if((first+d-1)%7===6 && d!==days) h+='</tr><tr>';
+  }
+  document.getElementById('calTable').innerHTML=h+'</tr>';
+}
+function drawText(){
+  msgOut.textContent=msgBox.value;
+  senderOut.textContent='- '+nameBox.value;
+  senderOut.style.top=(msgOut.offsetTop+msgOut.offsetHeight+4)+'px';
+  const lines=greetBox.value.split('/').map(s=>s.trim()).join('<br>');
+  const dl=(showDate.checked&&dateLineBox.value.trim())?'<span class="dateline">'+dateLineBox.value.trim()+'</span>':'';
+  greetOut.innerHTML=lines+dl;
+}
+[msgBox,greetBox,nameBox,dateLineBox].forEach(el=>el.oninput=drawText);
+showDate.onchange=drawText;
+dateBox.onchange=()=>{drawCal(); autoDateLine(); drawText();};
+
+/* ===================== scale + export ===================== */
+const scaler=document.getElementById('scaler');
+function fit(){const k=Math.min(window.innerWidth-24,800)/800;
+  scaler.style.transform='scale('+k+')'; scaler.style.height=(1000*k)+'px';}
+addEventListener('resize',fit);
+
+document.getElementById('save').onclick=async()=>{
+  const btn=document.getElementById('save');
+  btn.disabled=true; btn.textContent='Making PNG...';
+  document.body.classList.add('exporting');
+  const old=scaler.style.transform;
+  scaler.style.transform='scale(1)'; scaler.style.height='1000px';
+  try{
+    const canvas=await html2canvas(frameEl,{backgroundColor:null,scale:3,useCORS:true});
+    const a=document.createElement('a');
+    a.download=occ+'-'+D[design].id+'.png'; a.href=canvas.toDataURL('image/png'); a.click();
+  }catch(e){alert('Could not create the PNG. Use Ctrl+P and choose "Save as PDF" instead.');}
+  scaler.style.transform=old; document.body.classList.remove('exporting'); fit();
+  btn.disabled=false; btn.textContent='Download PNG';
+};
+
+applyOccasionText();
+autoDateLine();
+render();
+fit();
+</script>
+</body>
+</html>
