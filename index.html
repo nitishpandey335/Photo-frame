@@ -57,9 +57,10 @@
   .cal{position:absolute}
   .cal table{width:100%;border-collapse:collapse}
   .cal th{font-size:12px;letter-spacing:.09em;font-weight:700;color:var(--muted);padding-bottom:8px}
-  .cal td{height:26px;text-align:center;font-size:15px;color:var(--ink);position:relative;font-family:'Nunito',sans-serif}
-  .cal td.mark span{position:relative;z-index:2;font-weight:800}
-  .cal td.mark svg{position:absolute;left:50%;top:50%;transform:translate(-50%,-52%);width:36px;height:34px;z-index:1;color:var(--accent)}
+  .cal td{height:26px;text-align:center;font-size:15px;color:var(--ink);font-family:'Nunito',sans-serif}
+  .cal td.mark .markwrap{position:relative;display:inline-block;width:26px;height:26px;line-height:26px}
+  .cal td.mark .markwrap span{position:relative;z-index:2;font-weight:800}
+  .cal td.mark .markwrap svg{position:absolute;left:50%;top:50%;transform:translate(-50%,-52%);width:36px;height:34px;z-index:1;color:var(--accent)}
 
   .msg{position:absolute;white-space:pre-wrap;font-family:var(--body);font-size:19px;line-height:1.35;color:var(--ink)}
   .sender{position:absolute;font-family:var(--body);font-size:19px;color:var(--ink)}
@@ -483,7 +484,7 @@ function drawCal(){
   let h='<tr>'+['SUN','MON','TUE','WED','THU','FRI','SAT'].map(x=>'<th>'+x+'</th>').join('')+'</tr><tr>';
   for(let i=0;i<first;i++) h+='<td></td>';
   for(let d=1;d<=days;d++){
-    h += (d===d0) ? '<td class="mark">'+mk+'<span>'+d+'</span></td>' : '<td>'+d+'</td>';
+    h += (d===d0) ? '<td class="mark"><span class="markwrap">'+mk+'<span>'+d+'</span></span></td>' : '<td>'+d+'</td>';
     if((first+d-1)%7===6 && d!==days) h+='</tr><tr>';
   }
   document.getElementById('calTable').innerHTML=h+'</tr>';
