@@ -515,11 +515,17 @@ document.getElementById('save').onclick=async()=>{
   try{
     const canvas=await html2canvas(frameEl,{backgroundColor:null,scale:3,useCORS:true});
     const blob=await new Promise(res=>canvas.toBlob(res,'image/png'));
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement('a');
-    a.download=occ+'-'+D[design].id+'.png'; a.href=url; a.click();
-    setTimeout(()=>URL.revokeObjectURL(url),10000);
-  }catch(e){alert('Could not create the PNG. Use Ctrl+P and choose "Save as PDF" instead.');}
+    const fileName=occ+'-'+D[design].id+'.png';
+    const file=new File([blob],fileName,{type:'image/png'});
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      await navigator.share({files:[file],title:fileName});
+    }else{
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      a.download=fileName; a.href=url; a.click();
+      setTimeout(()=>URL.revokeObjectURL(url),10000);
+    }
+  }catch(e){if(e.name!=='AbortError')alert('Could not create the PNG. Use Ctrl+P and choose "Save as PDF" instead.');}
   scaler.style.transform=old; document.body.classList.remove('exporting'); fit();
   btn.disabled=false; btn.textContent='Download PNG';
 };
