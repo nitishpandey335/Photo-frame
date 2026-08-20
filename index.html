@@ -513,6 +513,8 @@ document.getElementById('save').onclick=async()=>{
   const old=scaler.style.transform;
   scaler.style.transform='scale(1)'; scaler.style.height='1000px';
   try{
+    if(document.fonts&&document.fonts.ready){await document.fonts.ready;}
+    await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
     const canvas=await html2canvas(frameEl,{backgroundColor:null,scale:3,useCORS:true});
     const blob=await new Promise(res=>canvas.toBlob(res,'image/png'));
     const fileName=occ+'-'+D[design].id+'.png';
